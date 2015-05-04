@@ -3,7 +3,24 @@
 /*argv[0] is the Circuit Description File
   argv[1] is the Input Values File
   */
-  
+  	char *buffer;
+	char *inputs;
+	char *outputs;
+	int *invals;
+	int *outvals;
+	int inno;
+	int outno;
+	int *intemp;
+	int intemp_s;
+	int *outtemp;
+	int outtemp_s;
+	int i;
+	char *in;
+	char *out;
+	int decin;
+	int muxin;
+	int numin;
+	int numout;
   
 int main(int argc, char* argv[]){
 	if(argc != 3){
@@ -11,20 +28,16 @@ int main(int argc, char* argv[]){
 	}
 	FILE cdf;
 	FILE ivf;
-	char *buffer;
-	char *inputs;
-	char *outputs;
-	int *invals;
-	int *outvals;
-	int inno;
-	int outno;
-	int intemp[2];
-	int outtemp[4];
-	int i;
-	char in[2];
-	char out[4];
-	int[] muxin = {0, 0, 0, 0};
-	
+	intemp = malloc(sizeof(int)*2);
+	intemp_s = 2;
+	outtemp = malloc(sizeof(int)*4);
+	outtemp_s = 4;
+	in = malloc(sizeof(char)*2);
+	out = malloc(sizeof(char)*4);
+	if(!(intemp&&outtemp&&in&&out)){
+		perror("mallocing error");
+		exit(1);
+	}
 	if((cdf = fopen(argv[1], "r")) == NULL){
 		perror("Could not open Circuit Description File.");
 		exit(1);
@@ -79,79 +92,40 @@ int main(int argc, char* argv[]){
 	/*Execute circuit.*/
 		while(fscanf(cdf, "%s", buffer)!= EOF){
 			if(strcmp(buffer, "NOT") == 0){
-				if (fscanf(cdf, "%c", in[0]) != 1){
-					perror("Could not read in0");
-					exit(1);
-				}
-				else if (fscanf(cdf, "%c", out[0]) != 1){
-					perror("Could not read out0");
-					exit(1);
-				}
-				else if((intemp[0] = find(inputs, in[0], inno)) == -1){
-					perror("Could not find in0");
-					exit(1);
-				}
-				else if((outtemp[0] = find(outputs, out[0], outno)) == -1){
-					perror("Could not find out0");
-					exit(1);
-				}
+				numin = 1;
+				numout = 1;
+				read(cdf);
 				outputs[outtemp[0]] = !inputs[intemp[0]];
 			}
 			else if(strcmp(buffer, "AND") == 0){
-				if (fscanf(cdf, "%c", in[0]) != 1){
-					perror("Could not read in0");
-					exit(1);
-				}
-				else if (fscanf(cdf, "%c", in[1]) != 1){
-					perror("Could not read in1");
-					exit(1);
-				}
-				else if (fscanf(cdf, "%c", out[0]) != 1){
-					perror("Could not read out0");
-					exit(1);
-				}
-				else if((intemp[0] = find(inputs, in[0], inno)) == -1){
-					perror("Could not find in0");
-					exit(1);
-				}
-				else if((intemp[1] = find(inputs, in[1], inno)) == -1){
-					perror("Could not find in1");
-					exit(1);
-				}
-				else if((outtemp[0] = find(outputs, out[0], outno)) == -1){
-					perror("Could not find out0");
-					exit(1);
-				}
+				numin = 2;
+				numout = 1;
+				read(cdf);
 				outputs[outtemp[0]] = (inputs[intemp[0]] && inputs[intemp[1]]);
 			}
 			else if(strcmp(buffer, "OR") == 0){
-				if (fscanf(cdf, "%c", in[0]) != 1){
-					perror("Could not read in0");
-					exit(1);
-				}
-				else if (fscanf(cdf, "%c", in[1]) != 1){
-					perror("Could not read in1");
-					exit(1);
-				}
-				else if (fscanf(cdf, "%c", out[0]) != 1){
-					perror("Could not read out0");
-					exit(1);
-				}
-				else if((intemp[0] = find(inputs, in[0], inno)) == -1){
-					perror("Could not find in0");
-					exit(1);
-				}
-				else if((intemp[1] = find(inputs, in[1], inno)) == -1){
-					perror("Could not find in1");
-					exit(1);
-				}
-				else if((outtemp[0] = find(outputs, out[0], outno)) == -1){
-					perror("Could not find out0");
-					exit(1);
-				}
+				numin = 2;
+				numout = 1;
+				read(cdf);
 				outputs[outtemp[0]] = (inputs[intemp[0]] || inputs[intemp[1]]);
 			}
 			else if(strcmp(buffer, "DECODER") == 0){
+				if (fscanf(cdf, "%d", numin) != 1){
+					perror("Could not read numin");
+					exit(1);
+				}
+				numout = numin << 1 ;
+				if(numin > intemp_s){
+					realloc(intemp, sizeof(int)*numin);
+					realloc(in, sizeof(char)*numin);
+				}
+				if(numout > outtemp_s){
+					realloc(outtemp, sizeof(int)*numout);
+				}
+				
+				
+				read(cdf, decin, (i << 1));
+				
 				
 			}
 			else if(strcmp(buffer, "MULTIPLEXER") == 0){
@@ -170,7 +144,43 @@ int find(char array[], char target, int saiz){
 	}
 	return -1;
 }
-
+/*Reads variables and sets up values in intemp and outtemp. Use to perform gate operation in main.*/
+int read(FILE cdf, int intemp[], char in[], char *inputs, int outtemp[], char out[], char *outputs, int inno, int outno, int numin, int numout){
+	int a;
+	int b;
+	a = b = 0;
+	while(a <= numin){
+		if (fscanf(cdf, "%c", in[a]) != 1){
+			perror("Could not read input");
+			exit(1);
+		}
+		a++;
+	}
+	while(b <= numout){
+		if(fscanf(cdf, "%c", out[b]) != 1){
+			perror("Could not read output");
+			exit(1);
+		}
+		b++;
+	}
+	a = 0;
+	b = 0;
+	while(a <= numin){
+		if((intemp[a] = find(inputs, in[a], inno)) == -1){
+			perror("Could not find input");
+			exit(1);
+		}
+		a++;
+	}
+	while(b <= numout){
+		if((outtemp[b] = find(outputs, out[b], outno)) == -1){
+			perror("Could not find output");
+			exit(1);
+		}
+		b++;
+	}
+	
+}
 
 
 
