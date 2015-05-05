@@ -137,7 +137,7 @@ int main(int argc, char* argv[]){
 				numin = numin >> 1;
 				numout = 1;
 				read(cdf);
-				gateout[0] = mux[(binary_to_gs_to_dec(gatesin, numin))];
+				gateout[0] = mux[(binary_to_gs_to_dec(gatein, numin))];
 			}
 		}
 	}
