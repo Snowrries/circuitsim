@@ -79,9 +79,9 @@ int main(int argc, char* argv[]){
 	}
 	rewind(cdf);
 	/*Begin loading values.*/
-	while(fscanf(ivf, "%d", input[0] ->value) != EOF){
+	while(fscanf(ivf, "%d", inputs[0] ->value) != EOF){
 		for(i = 1; i < inno; i++){
-			if(fscanf(ivf, "%d", (input[i]) -> value) != 1){
+			if(fscanf(ivf, "%d", (inputs[i]) -> value) != 1){
 				perror("Couldn't grab inputs values.");
 				exit(1);
 			}
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]){
 				for(i = 0; i < numout; i++){
 					gateout[i]->value = 0;
 				}
-				gateout[binary_to_gs_to_dec(gatesin, numin)]->value = 1;
+				gateout[binary_to_gs_to_dec(gatein, numin)]->value = 1;
 				
 			}
 			else if(strcmp(buffer, "MULTIPLEXER") == 0){
@@ -125,7 +125,7 @@ int main(int argc, char* argv[]){
 					exit(1);
 				}
 				if(numin > 64){
-					perror("Buffer overflow protection. We can only take 64 inputs in the multiplexer.")
+					perror("Buffer overflow protection. We can only take 64 inputs in the multiplexer.");
 					exit(1);
 				}
 				for(i = 0; i < numin; i++){
@@ -137,7 +137,7 @@ int main(int argc, char* argv[]){
 				numin = numin >> 1;
 				numout = 1;
 				read(cdf);
-				gatesout[0] = mux[(binary_to_gs_to_dec(gatesin, numin))];
+				gateout[0] = mux[(binary_to_gs_to_dec(gatesin, numin))];
 			}
 		}
 	}
@@ -167,7 +167,7 @@ entry find(entry array[], char target, int saiz){
 	return NULL;
 }
 /*Reads variables and sets up values in temporary, or output vars. Use to perform gate operation in main.*/
-int read(FILE cdf){
+int read(FILE* cdf){
 	int a;
 	int b;
 	int c;
@@ -188,7 +188,7 @@ int read(FILE cdf){
 			perror("Could not read output");
 			exit(1);
 		}
-		if((gateout[b] = find(inputs, out, outno) == NULL){
+		if((gateout[b] = find(inputs, out, outno)) == NULL){
 			if((gateout[b] = find(inputs, out, outno)) == NULL){
 				inputs[cursize] -> name = out;
 				gateout[b] = inputs[cursize];
