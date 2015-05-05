@@ -18,7 +18,7 @@
 	entry outputs[26];
 	//inputs size
 	int cursize;
-	//Space for our multiplexer inputs. Malloc and realloc as needed.
+	//Space for our multiplexer inputs.
 	int *multiplex; 
 	//Number of inputs, number of outputs.
 	int inno;
@@ -197,5 +197,6 @@ int main(int argc, char* argv[]){
 			}
 		}
 	}
+	return 0;
 }
 
