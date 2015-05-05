@@ -22,6 +22,7 @@
 	//Number of inputs, number of outputs.
 	int inno;
 	int outno;
+	int mux[64];
 	
 	int *invals;
 	int *outvals;
@@ -128,21 +129,41 @@ int main(int argc, char* argv[]){
 				
 			}
 			else if(strcmp(buffer, "MULTIPLEXER") == 0){
-				
+				if (fscanf(cdf, "%d", numin) != 1){
+					perror("Could not read numin");
+					exit(1);
+				}
+				if(numin > 64){
+					perror("Buffer overflow protection. We can only take 64 inputs in the multiplexer.")
+					exit(1);
+				}
+				for(i = 0; i < numin; i++){
+					if(fscanf(cdf, "%d", mux[i])!= 1){
+						perror("Trouble reading mux inputs.");
+						exit(1);
+					}
+				}
+				numin = numin >> 1;
+				numout = 1;
+				read(cdf);
+				gatesout[0] = mux[(binary_to_gs_to_dec(gatesin, numin))];
 			}
 		}
 	}
 }
 /*It's definitely possible to go from binary to grey sequencing to decimal.*/
-int binary_to_dec(entry *gatesin, int numin){
+int binary_to_gs_to_dec(entry *gatesin, int numin){
 	int inpu = 0;
 	for(i = 0; i < numin; i++){
 		inpu << 1;
 		inpu += gatesin[i]->value;
 	}
 	for(i = 0; i < (numin << 1); i++){
-		
+		if(inpu == (i^(i>>1))){//Check against the grey sequence. 
+			return i;
+		}
 	}
+	return 0;
 }
 
 entry find(entry array[], char target, int saiz){
