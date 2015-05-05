@@ -7,7 +7,7 @@
 		char name;
 		int value;
 	};
-  	typedef (struct entry_t)* entry;
+  	typedef struct entry_t* entry;
 
   	char *buffer;
 	//That's space for all the variables.
