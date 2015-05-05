@@ -57,7 +57,8 @@ entry find(entry array[], char target, int saiz){
 void read(FILE* cdf){
 	int a;
 	int b;
-	a = b = 0;
+	a = 0;
+	b = 0;
 	while(a < numin){
 		if (fscanf(cdf, "%c", &in) != 1){
 			perror("Could not read input");
@@ -134,9 +135,10 @@ int main(int argc, char* argv[]){
 			/*Finished setting up all output variables.*/
 		}
 	}
-	rewind(cdf);
+//	rewind(cdf);
 	/*Begin loading values.*/
-	while(fscanf(ivf, "%d", &(inputs[0] ->value)) != EOF){
+	//while(fscanf(ivf, "%d", &(inputs[0] ->value)) != EOF){
+		fscanf(ivf, "%d", &(inputs[0] ->value));
 		for(i = 1; i < inno; i++){
 			if(fscanf(ivf, "%d", &(inputs[i] -> value)) != 1){
 				perror("Couldn't grab inputs values.");
@@ -197,7 +199,7 @@ int main(int argc, char* argv[]){
 				gateout[0]->value = mux[(binary_to_gs_to_dec(gatein, numin))];
 			}
 		}
-	}
+	//}
 	return 0;
 }
 
