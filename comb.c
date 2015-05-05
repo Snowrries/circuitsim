@@ -92,6 +92,7 @@ int main(int argc, char* argv[]){
 	FILE *cdf;
 	FILE *ivf;
 	cursize = 0;
+	buffer = malloc(sizeof(char)*12);
 	
 	if((cdf = fopen(argv[1], "r")) == NULL){
 		perror("Could not open Circuit Description File.");
@@ -102,7 +103,7 @@ int main(int argc, char* argv[]){
 		exit(1);
 	}
 	
-	while(fscanf(cdf,"%s",buffer) == 1 ){
+	while(fscanf(cdf,"%s",&buffer) == 1 ){
 		if(strcmp(buffer, "INPUTVAR") == 0){
 			if (fscanf(cdf, "%d", &inno) != 1){
 				perror("Could not read inno");
@@ -143,7 +144,7 @@ int main(int argc, char* argv[]){
 			}
 		}
 	/*Execute circuit.*/
-		while(fscanf(cdf, "%s", buffer)!= EOF){
+		while(fscanf(cdf, "%s", &buffer)!= EOF){
 			if(strcmp(buffer, "NOT") == 0){
 				numin = 1;
 				numout = 1;
