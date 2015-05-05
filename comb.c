@@ -23,18 +23,9 @@
 	int inno;
 	int outno;
 	int mux[64];
-	
-	int *invals;
-	int *outvals;
-	int *intemp;
-	int intemp_s;
-	int *outtemp;
-	int outtemp_s;
 	unsigned int i;
 	char in;
 	char out;
-	int decin;
-	int muxin;
 	int numin;
 	int numout;
 	
@@ -88,7 +79,7 @@ int main(int argc, char* argv[]){
 	}
 	rewind(cdf);
 	/*Begin loading values.*/
-	while(fscanf(ivf, "%d", invals[0]) != EOF){
+	while(fscanf(ivf, "%d", input[0] ->value) != EOF){
 		for(i = 1; i < inno; i++){
 			if(fscanf(ivf, "%d", (input[i]) -> value) != 1){
 				perror("Couldn't grab inputs values.");
@@ -208,9 +199,3 @@ int read(FILE cdf){
 	}
 	
 }
-
-
-
-
-
-
