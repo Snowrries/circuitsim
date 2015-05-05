@@ -29,7 +29,62 @@
 	char out;
 	int numin;
 	int numout;
+	/*It's definitely possible to go from binary to grey sequencing to decimal.*/
+int binary_to_gs_to_dec(entry *gatesin, int numin){
+	int inpu = 0;
+	for(i = 0; i < numin; i++){
+		inpu = inpu << 1;
+		inpu += gatesin[i]->value;
+	}
+	for(i = 0; i < (numin << 1); i++){
+		if(inpu == (i^(i>>1))){//Check against the grey sequence. 
+			return i;
+		}
+	}
+	return 0;
+}
+
+entry find(entry array[], char target, int saiz){
+	int i;
+	for(i = 0; i < saiz; i++){
+		if(target == (array[i])->name){
+			return array[i];
+		}
+	}
+	return NULL;
+}
+/*Reads variables and sets up values in temporary, or output vars. Use to perform gate operation in main.*/
+void read(FILE* cdf){
+	int a;
+	int b;
+	a = b = 0;
+	while(a < numin){
+		if (fscanf(cdf, "%c", &in) != 1){
+			perror("Could not read input");
+			exit(1);
+		}
+		if((gatein[a] = find(inputs, in, inno)) == NULL){
+			perror("Could not find input");
+			exit(1);
+		}
+		a++;
+	}
+	while(b < numout){
+		if(fscanf(cdf, "%c", &out) != 1){
+			perror("Could not read output");
+			exit(1);
+		}
+		if((gateout[b] = find(inputs, out, outno)) == NULL){
+			if((gateout[b] = find(inputs, out, outno)) == NULL){
+				inputs[cursize] -> name = out;
+				gateout[b] = inputs[cursize];
+				cursize++;
+			}
+		}
+		b++;
+	}
 	
+}
 int main(int argc, char* argv[]){
 	if(argc != 3){
 		printf("Incorrect number of arguments.");
@@ -80,7 +135,7 @@ int main(int argc, char* argv[]){
 	}
 	rewind(cdf);
 	/*Begin loading values.*/
-	while(fscanf(ivf, "%d", inputs[0] ->value) != EOF){
+	while(fscanf(ivf, "%d", &(inputs[0] ->value)) != EOF){
 		for(i = 1; i < inno; i++){
 			if(fscanf(ivf, "%d", &(inputs[i] -> value)) != 1){
 				perror("Couldn't grab inputs values.");
@@ -108,7 +163,7 @@ int main(int argc, char* argv[]){
 				(gateout[0]->value) = (gatein[0]->value) || (gatein[1]->value);
 			}
 			else if(strcmp(buffer, "DECODER") == 0){
-				if (fscanf(cdf, "%d", numin) != 1){
+				if (fscanf(cdf, "%d", &numin) != 1){
 					perror("Could not read numin");
 					exit(1);
 				}
@@ -143,59 +198,4 @@ int main(int argc, char* argv[]){
 		}
 	}
 }
-/*It's definitely possible to go from binary to grey sequencing to decimal.*/
-int binary_to_gs_to_dec(entry *gatesin, int numin){
-	int inpu = 0;
-	for(i = 0; i < numin; i++){
-		inpu = inpu << 1;
-		inpu += gatesin[i]->value;
-	}
-	for(i = 0; i < (numin << 1); i++){
-		if(inpu == (i^(i>>1))){//Check against the grey sequence. 
-			return i;
-		}
-	}
-	return 0;
-}
 
-entry find(entry array[], char target, int saiz){
-	int i;
-	for(i = 0; i < saiz; i++){
-		if(target == (array[i])->name){
-			return array[i];
-		}
-	}
-	return NULL;
-}
-/*Reads variables and sets up values in temporary, or output vars. Use to perform gate operation in main.*/
-int read(FILE* cdf){
-	int a;
-	int b;
-	a = b = 0;
-	while(a < numin){
-		if (fscanf(cdf, "%c", &in) != 1){
-			perror("Could not read input");
-			exit(1);
-		}
-		if((gatein[a] = find(inputs, in, inno)) == NULL){
-			perror("Could not find input");
-			exit(1);
-		}
-		a++;
-	}
-	while(b < numout){
-		if(fscanf(cdf, "%c", &out) != 1){
-			perror("Could not read output");
-			exit(1);
-		}
-		if((gateout[b] = find(inputs, out, outno)) == NULL){
-			if((gateout[b] = find(inputs, out, outno)) == NULL){
-				inputs[cursize] -> name = out;
-				gateout[b] = inputs[cursize];
-				cursize++;
-			}
-		}
-		b++;
-	}
-	
-}
