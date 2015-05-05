@@ -104,7 +104,7 @@ int main(int argc, char* argv[]){
 		exit(1);
 	}
 	
-	while(fscanf(cdf,"%s",&buffer) == 1 ){
+	while(fscanf(cdf,"%s",&buffer) != EOF ){
 		if(strcmp(buffer, "INPUTVAR") == 0){
 			if (fscanf(cdf, "%d", &inno) != 1){
 				perror("Could not read inno");
@@ -135,10 +135,9 @@ int main(int argc, char* argv[]){
 			/*Finished setting up all output variables.*/
 		}
 	}
-//	rewind(cdf);
+	rewind(cdf);
 	/*Begin loading values.*/
-	//while(fscanf(ivf, "%d", &(inputs[0] ->value)) != EOF){
-		fscanf(ivf, "%d", &(inputs[0] ->value));
+	while(fscanf(ivf, "%d", &(inputs[0] ->value)) != EOF){
 		for(i = 1; i < inno; i++){
 			if(fscanf(ivf, "%d", &(inputs[i] -> value)) != 1){
 				perror("Couldn't grab inputs values.");
@@ -199,7 +198,7 @@ int main(int argc, char* argv[]){
 				gateout[0]->value = mux[(binary_to_gs_to_dec(gatein, numin))];
 			}
 		}
-	//}
+	}
 	return 0;
 }
 
