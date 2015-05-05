@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 /*argv[0] is the Circuit Description File
   argv[1] is the Input Values File
   */
@@ -48,12 +49,12 @@ int main(int argc, char* argv[]){
 	
 	while(fscanf(cdf,"%s",buffer) == 1 ){
 		if(strcmp(buffer, "INPUTVAR") == 0){
-			if (fscanf(cdf, "%d", inno) != 1){
+			if (fscanf(cdf, "%d", &inno) != 1){
 				perror("Could not read inno");
 				exit(1);
 			}
 			for(i = 0; i < inno; i++){
-				if(fscanf(cdf, "%c", (inputs[i])->name) != 1){
+				if(fscanf(cdf, "%c", &(inputs[i]->name)) != 1){
 					perror("Could not read all input variables.");
 					exit(1);
 				}
@@ -64,12 +65,12 @@ int main(int argc, char* argv[]){
 		}
 		
 		else if(strcmp(buffer, "OUTPUTVAR") == 0){
-			if (fscanf(cdf, "%d", outno) != 1){
+			if (fscanf(cdf, "%d", &outno) != 1){
 				perror("Could not read outno");
 				exit(1);
 			}
 			for(i = 0; i < outno; i++){
-				if(fscanf(cdf, "%c", (outputs[i]) ->name) != 1){
+				if(fscanf(cdf, "%c", &(outputs[i] ->name)) != 1){
 					perror("Could not read all output variables.");
 					exit(1);
 				}
@@ -81,7 +82,7 @@ int main(int argc, char* argv[]){
 	/*Begin loading values.*/
 	while(fscanf(ivf, "%d", inputs[0] ->value) != EOF){
 		for(i = 1; i < inno; i++){
-			if(fscanf(ivf, "%d", (inputs[i]) -> value) != 1){
+			if(fscanf(ivf, "%d", &(inputs[i] -> value)) != 1){
 				perror("Couldn't grab inputs values.");
 				exit(1);
 			}
@@ -120,7 +121,7 @@ int main(int argc, char* argv[]){
 				
 			}
 			else if(strcmp(buffer, "MULTIPLEXER") == 0){
-				if (fscanf(cdf, "%d", numin) != 1){
+				if (fscanf(cdf, "%d", &numin) != 1){
 					perror("Could not read numin");
 					exit(1);
 				}
@@ -129,7 +130,7 @@ int main(int argc, char* argv[]){
 					exit(1);
 				}
 				for(i = 0; i < numin; i++){
-					if(fscanf(cdf, "%d", mux[i])!= 1){
+					if(fscanf(cdf, "%d", &mux[i])!= 1){
 						perror("Trouble reading mux inputs.");
 						exit(1);
 					}
@@ -146,7 +147,7 @@ int main(int argc, char* argv[]){
 int binary_to_gs_to_dec(entry *gatesin, int numin){
 	int inpu = 0;
 	for(i = 0; i < numin; i++){
-		inpu << 1;
+		inpu = inpu << 1;
 		inpu += gatesin[i]->value;
 	}
 	for(i = 0; i < (numin << 1); i++){
@@ -170,10 +171,9 @@ entry find(entry array[], char target, int saiz){
 int read(FILE* cdf){
 	int a;
 	int b;
-	int c;
 	a = b = 0;
 	while(a < numin){
-		if (fscanf(cdf, "%c", in) != 1){
+		if (fscanf(cdf, "%c", &in) != 1){
 			perror("Could not read input");
 			exit(1);
 		}
@@ -184,7 +184,7 @@ int read(FILE* cdf){
 		a++;
 	}
 	while(b < numout){
-		if(fscanf(cdf, "%c", out) != 1){
+		if(fscanf(cdf, "%c", &out) != 1){
 			perror("Could not read output");
 			exit(1);
 		}
