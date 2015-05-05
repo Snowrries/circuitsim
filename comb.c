@@ -7,7 +7,7 @@
 		char name;
 		int value;
 	};
-  	typedef struct *entry_t entry;
+  	typedef (struct entry_t)* entry;
 
   	char *buffer;
 	//That's space for all the variables.
@@ -33,8 +33,8 @@ int main(int argc, char* argv[]){
 	if(argc != 3){
 		printf("Incorrect number of arguments.");
 	}
-	FILE* cdf;
-	FILE* ivf;
+	FILE *cdf;
+	FILE *ivf;
 	cursize = 0;
 	
 	if((cdf = fopen(argv[1], "r")) == NULL){
@@ -173,7 +173,7 @@ int read(FILE cdf){
 	int c;
 	a = b = 0;
 	while(a < numin){
-		if (fscanf(cdf, "%c", in]) != 1){
+		if (fscanf(cdf, "%c", in) != 1){
 			perror("Could not read input");
 			exit(1);
 		}
