@@ -3,11 +3,11 @@
 /*argv[0] is the Circuit Description File
   argv[1] is the Input Values File
   */
-	typedef *(struct entry_t{
+	struct entry_t{
 		char name;
 		int value;
-	})entry;
-	
+	};
+  	typedef struct *entry_t entry;
 
   	char *buffer;
 	//That's space for all the variables.
@@ -33,8 +33,8 @@ int main(int argc, char* argv[]){
 	if(argc != 3){
 		printf("Incorrect number of arguments.");
 	}
-	FILE cdf;
-	FILE ivf;
+	FILE* cdf;
+	FILE* ivf;
 	cursize = 0;
 	
 	if((cdf = fopen(argv[1], "r")) == NULL){
