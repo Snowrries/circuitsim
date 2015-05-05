@@ -3,10 +3,10 @@
 /*argv[0] is the Circuit Description File
   argv[1] is the Input Values File
   */
-	typedef *struct entry_t{
+	typedef *(struct entry_t{
 		char name;
 		int value;
-	}entry;
+	})entry;
 	
 
   	char *buffer;
